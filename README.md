@@ -1,18 +1,42 @@
 # Telegram Daily Quote Bot
 
-Sends a motivational quote to a Telegram group every morning at **08:00 IST**.
-Runs either **locally** (Windows Task Scheduler) or — recommended — **in the
-cloud** on GitHub Actions, so it keeps working with the laptop off.
+Posts a premium **1080×1080 quote card + greeting** to the *New Age Algo
+Strategies* Telegram channel every morning at **08:00 IST, Monday–Saturday**
+(Sundays skipped) — fully cloud-side, laptop off.
+
+## Current production architecture (Supabase)
 
 ```
-cron-job.org / GitHub scheduler
-        │
+pg_cron (Mon–Sat 02:30 UTC = 08:00 IST)
+        │   select public.send_daily_quote()
         ▼
-GitHub Actions (ubuntu-latest)  ──or──  Windows Task Scheduler
-        │
+send_daily_quote()  ── picks a random carded quote (table quotes),
+        │              reads secrets from app_secrets (never committed)
+        │   HTTP POST (shared secret)
         ▼
-restore GramJS session  →  pick quote  →  send to Telegram group
+Edge Function daily-quote  (supabase/functions/daily-quote/index.ts)
+        │   1) stored card  quote-images/quote-{id}.png   ← premium, 1080×1080
+        │   2) fallback: generateImage (Gemini → Pollinations → OpenAI)
+        │   3) fallback: text message containing the quote
+        ▼
+Telegram sendPhoto — caption is the "Good Morning" greeting only;
+                     the quote itself lives inside the card image.
 ```
+
+| Piece | Where it lives |
+|---|---|
+| Quotes (46) + `has_image` rotation flags | Postgres table `quotes` |
+| Premium card artwork (18 in rotation) | Supabase Storage bucket `quote-images` + `cards/1080/` here |
+| Scheduler | pg_cron job, schedule `30 2 * * 1-6` |
+| Edge function source | `supabase/functions/daily-quote/index.ts` — secret **redacted**, set `DAILY_QUOTE_SECRET` before deploying |
+| DB function source | `supabase/migrations/20261005_send_daily_quote.sql` |
+| Card generation (batch) | local ChatGPT bridge → resize → upload (see `scripts/`) |
+
+> The GitHub Actions workflow documented below is the **legacy** sender —
+> kept for manual runs only (its schedule is disabled). Production runs on
+> Supabase pg_cron.
+
+---
 
 ## Configuration
 
