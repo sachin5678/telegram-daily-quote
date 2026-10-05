@@ -11,10 +11,11 @@ on:
   # new-age-algos repo — GitHub's own scheduler has been unreliable here).
   repository_dispatch:
     types: [daily-quote]
-  # 02:30 UTC = 08:00 IST, every day. If this never fires for the account,
-  # use cron-job.org → workflow_dispatch instead (see README).
-  schedule:
-    - cron: "30 2 * * *"
+  # 02:30 UTC = 08:00 IST, every day.
+  # DISABLED 2026-10-05: production sending moved to Supabase pg_cron
+  # (Mon-Sat 08:00 IST -> edge function -> Telegram). Kept for manual runs.
+  # schedule:
+  #   - cron: "30 2 * * *"
 
 permissions:
   contents: read
