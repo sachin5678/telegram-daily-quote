@@ -1,0 +1,8 @@
+node_modules/
+# Quote card artwork (44 MB, not used by the bot yet — kept local for now)
+cards/
+.env
+daily-quote.env
+session.json
+_minsession_test.js
+*.log

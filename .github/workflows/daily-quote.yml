@@ -1,0 +1,59 @@
+name: Daily Quote
+
+on:
+  workflow_dispatch:
+    inputs:
+      quote_index:
+        description: "Optional quote index (0-based). Leave empty for random."
+        required: false
+        default: ""
+  # Alternative trigger for cron-job.org (the proven pattern used by the
+  # new-age-algos repo — GitHub's own scheduler has been unreliable here).
+  repository_dispatch:
+    types: [daily-quote]
+  # 02:30 UTC = 08:00 IST, every day. If this never fires for the account,
+  # use cron-job.org → workflow_dispatch instead (see README).
+  schedule:
+    - cron: "30 2 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-quote
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # One secret holds everything: API id/hash, target group and the trimmed
+      # GramJS session (see scripts/export-session.mjs).
+      - name: Write DAILY_QUOTE_ENV to .env
+        env:
+          DAILY_QUOTE_ENV: ${{ secrets.DAILY_QUOTE_ENV }}
+        run: |
+          if [ -z "$DAILY_QUOTE_ENV" ]; then
+            echo "::error::DAILY_QUOTE_ENV secret is not set (see README, Deployment section)"
+            exit 2
+          fi
+          printf '%s\n' "$DAILY_QUOTE_ENV" > .env
+
+      - name: Restore Telegram session
+        run: node --env-file=.env scripts/restore-session.mjs
+
+      - name: Send quote
+        env:
+          QUOTE_INDEX: ${{ inputs.quote_index }}
+        run: node --env-file=.env send-quote.js
