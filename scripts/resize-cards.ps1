@@ -3,12 +3,12 @@
 Add-Type -AssemblyName System.Drawing
 
 $map = @{
-  47 = "chatgpt-image-1791296368115-1.png"
-  48 = "chatgpt-image-1791610492324-1.png"
-  49 = "chatgpt-image-1791610696308-1.png"
-  50 = "chatgpt-image-1791610866385-1.png"
-  51 = "chatgpt-image-1791610985833-1.png"
-  52 = "chatgpt-image-1791611102174-1.png"
+  53 = "chatgpt-image-1791611627294-1.png"
+  54 = "chatgpt-image-1791611781159-1.png"
+  55 = "chatgpt-image-1791611901592-1.png"
+  56 = "chatgpt-image-1791612047786-1.png"
+  57 = "chatgpt-image-1791613930041-1.png"
+  58 = "chatgpt-image-1791614019647-1.png"
 }
 
 $src = "C:\Users\Admin\.chatgpt-webui-mcp\images"
