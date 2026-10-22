@@ -1,0 +1,53 @@
+name: Upload quote cards
+
+# Pushes cards/1080/quote-<id>.png to the Supabase Storage bucket
+# quote-images and registers the matching row in the `quotes` table so the
+# daily rotation picks the card up.
+#
+# Needs the SUPABASE_SERVICE_ROLE_KEY repository secret
+# (Settings -> Secrets and variables -> Actions). The anon key cannot write.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ids:
+        description: "Quote ids to upload (comma separated). Empty = every card in scripts/cards-batch.json."
+        required: false
+        default: "65,66,67,68,69,70,71,72,73,74"
+      dry_run:
+        description: "Upload the images but skip the quotes-table upsert."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upload-cards
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Upload cards to Supabase
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::SUPABASE_SERVICE_ROLE_KEY secret is not set (see README, Generating new quote cards)"
+            exit 2
+          fi
+          args="--only=${{ inputs.ids }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            args="$args --dry"
+          fi
+          node scripts/upload-cards.mjs $args

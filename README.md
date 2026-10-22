@@ -26,12 +26,11 @@ Telegram sendPhoto — caption is the "Good Morning" greeting only;
 | Piece | Where it lives |
 |---|---|
 | Quotes (46) + `has_image` rotation flags | Postgres table `quotes` |
-| Premium card artwork (18 in rotation) | Supabase Storage bucket `quote-images` + `cards/1080/` here |
+| Premium card artwork | Supabase Storage bucket `quote-images` + `cards/1080/` here |
 | Scheduler | pg_cron job, schedule `30 2 * * 1-6` |
 | Edge function source | `supabase/functions/daily-quote/index.ts` — secret **redacted**, set `DAILY_QUOTE_SECRET` before deploying |
 | DB function source | `supabase/migrations/20261005_send_daily_quote.sql` |
 | Card generation (batch) | local ChatGPT bridge → resize → upload (see `scripts/`) |
-
 > The GitHub Actions workflow documented below is the **legacy** sender —
 > kept for manual runs only (its schedule is disabled). Production runs on
 > Supabase pg_cron.
@@ -142,6 +141,52 @@ Authorization: Bearer <fine-grained PAT: Actions: read & write>
 scheduled as `0 2 * * 1-5` … actually `0 2 * * *` (07:30 IST) or `30 2 * * *`
 (08:00 IST) in `Asia/Kolkata`. GitHub answers `204` on acceptance, so a bad
 token shows up as a cron-job.org job failure.
+
+## Generating new quote cards (our own ChatGPT)
+
+Cards are produced on this machine through our own ChatGPT account
+(`chatgpt-webui-mcp` → camofox → chatgpt.com), then resized to exactly
+1080×1080 and uploaded to the bucket.
+
+| Step | Command |
+|---|---|
+| 1. write the batch spec | `scripts/cards-batch.json` — quote, author, scene, gold words + the brand style block |
+| 2. render the prompt | `node scripts/dump-prompt.mjs 65` → `scripts/.prompt-65.txt` (add `--fresh` or `--edit` for the other wordings) |
+| 3. generate | `node scripts/chatgpt-card.mjs scripts/.prompt-65.txt cards/raw/quote-65-raw.png` |
+| 4. resize | `powershell -File scripts/resize-one.ps1 -Src cards/raw/quote-65-raw.png -Id 65` |
+| 5. review | `powershell -File scripts/make-previews.ps1 -Ids 65` → small JPEG previews |
+| 6. upload + register | `SUPABASE_SERVICE_ROLE_KEY=… node scripts/upload-cards.mjs --only=65` |
+
+Helpers: `generate-cards.mjs` (whole batch through the MCP bridge),
+`retry-cards.mjs` (retry loop with a gap between attempts),
+`diagnose-tabs.mjs` (dump the browser snapshot + screenshot of the current
+ChatGPT tabs), `resend-in-tab.mjs` (send the prompt again in an open chat).
+
+### When the image tool asks for a target image
+
+ChatGPT's image tool sometimes routes a fresh generation as an *edit* and
+replies "please upload the image you want me to modify". The fix is to give it
+the target it wants: `scripts/chatgpt-card-edit.mjs` attaches a small JPEG of
+an existing brand card (inlined as a data URL, so the page can build a `File`
+and hand it to the composer) and asks for the quote, attribution and
+background to be swapped while the layout is preserved.
+
+```powershell
+powershell -File scripts/make-previews.ps1 -Ids 64 -Size 340 -Quality 65 `
+  -OutDir cards\raw -Prefix "ref-"
+node scripts/chatgpt-card-edit.mjs scripts\.prompt-65e.txt cards\raw\quote-65-raw.png `
+  cards\raw\ref-quote-64.jpg
+```
+
+## Card inventory
+
+| Batch | Ids | Status |
+|---|---|---|
+| Original + mindset + philosopher batches | 1–6, 8, 36–64 | live in the bucket (36 cards, ~83 MB) |
+| Indian-leaders batch | 65–74 | generated and committed; **pending upload** to the bucket + `quotes` table |
+
+`quotes.id` matches the card file name, so a card is picked up by the rotation
+as soon as its row exists with `has_image = true`.
 
 ## Customising the quotes
 

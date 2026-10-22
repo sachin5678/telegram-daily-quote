@@ -61,7 +61,7 @@ for (const card of cards) {
     console.log(`  [dry] would upsert quotes id=${card.id}`);
     continue;
   }
-  const row = { id: card.id, text: card.quote, has_image: true };
+  const row = { id: card.id, text: `${card.quote} — ${card.author}`, has_image: true };
   const ins = await fetch(`${URL_BASE}/rest/v1/quotes?on_conflict=id`, {
     method: 'POST',
     headers: { ...H, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=representation' },
