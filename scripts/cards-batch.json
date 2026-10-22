@@ -1,0 +1,88 @@
+{
+  "brand": {
+    "name": "NEW AGE ALGORITHMS",
+    "tagline": "TRADING | INVESTING | A BETTER YOU",
+    "style": [
+      "Square 1:1 premium motivational quote card, 1080x1080.",
+      "Top centre: the brand mark - four ascending gold bars (like a rising bar chart) above the wordmark 'NEW AGE ALGORITHMS' in elegant spaced serif capitals, 'NEW AGE' in black and 'ALGORITHMS' in gold.",
+      "Directly under the wordmark, a thin gold rule and the small letterspaced tagline 'TRADING | INVESTING | A BETTER YOU' in muted gold.",
+      "Background: a rich, photorealistic, cinematic Indian scene matching the quote's theme, warm golden light, shallow depth of field, premium editorial photography.",
+      "Centre: a large ivory / cream rounded-rectangle panel with a very thin gold border and a soft shadow, occupying about 60% of the width.",
+      "Inside the panel: a large gold opening double-quote mark at the top, then the quote in a high-contrast elegant serif typeface (like Playfair Display), in near-black, with two or three key words highlighted in gold.",
+      "Below the quote: a short thin gold horizontal rule, then the attribution in small letterspaced sans-serif capitals in warm grey.",
+      "Typography must be perfectly spelled and legible, generous line spacing, nothing crowded, no watermark, no extra text, no logo of any other brand."
+    ]
+  },
+  "cards": [
+    {
+      "id": 65,
+      "quote": "Be the change you wish to see in the world.",
+      "author": "Mahatma Gandhi",
+      "theme": "a rustic Indian spinning wheel (charkha) in warm morning sunlight, soft dust in the light beams, calm golden rural backdrop",
+      "gold": ["Be the change"]
+    },
+    {
+      "id": 66,
+      "quote": "Live as if you were to die tomorrow. Learn as if you were to live forever.",
+      "author": "Mahatma Gandhi",
+      "theme": "a single oil lamp burning on a stone ledge at blue-hour dawn, a long winding path disappearing into misty hills behind it, deep blue and warm amber",
+      "gold": ["die tomorrow", "live forever"]
+    },
+    {
+      "id": 67,
+      "quote": "Arise, awake, and stop not till the goal is reached.",
+      "author": "Swami Vivekananda",
+      "theme": "first light breaking over a snowy Himalayan peak with a small temple lamp glowing in the foreground, dramatic golden sunrise rays",
+      "gold": ["Arise, awake", "stop not"]
+    },
+    {
+      "id": 68,
+      "quote": "Manpower and steel are the backbone of a nation.",
+      "author": "Sardar Vallabhbhai Patel",
+      "theme": "a glowing forge in an Indian steel plant, sparks flying, a worker's silhouette, industrial orange and steel-blue tones",
+      "gold": ["Manpower and steel", "backbone"]
+    },
+    {
+      "id": 69,
+      "quote": "Dream, dream, dream. Dreams transform into thoughts and thoughts result in action.",
+      "author": "Dr. A. P. J. Abdul Kalam",
+      "theme": "an Indian school child with a brass telescope on a rooftop at night under a galaxy of stars, rocket trails on the horizon, deep indigo and gold",
+      "gold": ["Dream", "action"]
+    },
+    {
+      "id": 70,
+      "quote": "At the stroke of the midnight hour, when the world sleeps, India will awake to life and freedom.",
+      "author": "Jawaharlal Nehru",
+      "theme": "India Gate illuminated at midnight with soft fog and a rising tricolour glow, deep blue night sky with stars, cinematic",
+      "gold": ["midnight hour", "awake to life and freedom"]
+    },
+    {
+      "id": 71,
+      "quote": "It is easy to kill individuals but you cannot kill the ideas.",
+      "author": "Bhagat Singh",
+      "theme": "a determined young Indian revolutionary in a 1920s cap holding an open notebook by lamplight, revolutionary spirit, warm sepia and gold",
+      "gold": ["kill the ideas"]
+    },
+    {
+      "id": 72,
+      "quote": "Give me blood, and I will give you freedom.",
+      "author": "Subhas Chandra Bose",
+      "theme": "a lit torch held high against a stormy sky over a marching column of silhouettes, dramatic rays of light, deep teal and gold",
+      "gold": ["blood", "freedom"]
+    },
+    {
+      "id": 73,
+      "quote": "The biggest risk in life is never taking one.",
+      "author": "Dhirubhai Ambani",
+      "theme": "a large cargo ship cutting through calm open sea at sunrise leaving a wake, golden light on the water, vast horizon, premium corporate photography",
+      "gold": ["biggest risk", "never taking one"]
+    },
+    {
+      "id": 74,
+      "quote": "The vision of India, a country of tolerance, is a nation in which all people, all creeds and all colours are welcome.",
+      "author": "Sarojini Naidu",
+      "theme": "a joyful diverse crowd of Indians in colourful traditional dress at a festival, marigold and saffron tones, warm golden light, shallow depth of field",
+      "gold": ["tolerance", "welcome"]
+    }
+  ]
+}
